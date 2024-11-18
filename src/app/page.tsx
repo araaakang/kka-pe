@@ -1,3 +1,5 @@
+import Script from 'next/script';
+
 export default function Home() {
   return (
     <div className="min-h-screen p-8 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -7,6 +9,7 @@ export default function Home() {
           <span className="text-4xl font-extrabold">?</span>
         </div>
       </main>
+      <Script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACloyFqZHDGRy5RwasW3unXxQ5EbdaPa0&loading=async&libraries=places&callback=initMap" />
     </div>
   );
 }
