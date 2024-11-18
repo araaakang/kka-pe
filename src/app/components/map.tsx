@@ -25,6 +25,15 @@ export default function Map() {
         };
         // setup the map
         const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
+        let currentPosition;
+        navigator.geolocation.getCurrentPosition(function (position) {
+          currentPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          map.setCenter(currentPosition);
+          map.setZoom(16);
+        });
       } catch (error) {
         console.error('Error loading Google Maps:', error);
       }
