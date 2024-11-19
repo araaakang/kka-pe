@@ -11,7 +11,7 @@ export default function Home() {
         </div>
         <Map />
       </main>
-      <Script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACloyFqZHDGRy5RwasW3unXxQ5EbdaPa0&loading=async&libraries=places&callback=initMap" />
+      <Script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACloyFqZHDGRy5RwasW3unXxQ5EbdaPa0&loading=async&libraries=places&callback=initMap&libraries=marker" />
     </div>
   );
 }

@@ -14,14 +14,16 @@ export default function Map() {
           version: 'weekly',
         });
         const { Map } = await loader.importLibrary('maps');
-
+        const { AdvancedMarkerElement } = await loader.importLibrary('marker');
+        const position = {
+          lat: 24.998259,
+          lng: 121.517034,
+        };
         // map options
         const mapOptions: google.maps.MapOptions = {
-          center: {
-            lat: 23.553118,
-            lng: 121.0211024,
-          },
+          center: position,
           zoom: 9,
+          mapId: 'KKA_PE_MAP_ID',
         };
         // setup the map
         const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
@@ -33,6 +35,12 @@ export default function Map() {
           };
           map.setCenter(currentPosition);
           map.setZoom(16);
+        });
+        // put up a marker
+        const marker = new AdvancedMarkerElement({
+          map,
+          position,
+          title: 'First coffee shop',
         });
       } catch (error) {
         console.error('Error loading Google Maps:', error);
