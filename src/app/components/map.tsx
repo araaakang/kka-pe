@@ -41,6 +41,7 @@ export default function Map() {
         const loader = new Loader({
           apiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY as string,
           version: 'weekly',
+          libraries: ['places'],
         });
         const { Map } = await loader.importLibrary('maps');
         const { AdvancedMarkerElement } = await loader.importLibrary('marker');
@@ -56,6 +57,7 @@ export default function Map() {
         };
         // setup the map
         const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
+        const service = new google.maps.places.PlacesService(map);
         let currentPosition;
         navigator.geolocation.getCurrentPosition(function (position) {
           currentPosition = {
@@ -75,6 +77,50 @@ export default function Map() {
             map,
             position,
             title: shop.name,
+          });
+          marker.addListener('click', () => {
+            // query by shop name to get place_id
+            service.findPlaceFromQuery(
+              {
+                query: shop.name,
+                fields: ['place_id'],
+              },
+              (results, status) => {
+                if (
+                  results &&
+                  status === google.maps.places.PlacesServiceStatus.OK &&
+                  results.length > 0
+                ) {
+                  const placeId = results[0].place_id as string;
+                  // use place_id to get place info
+                  const request = {
+                    placeId: placeId,
+                    fields: [
+                      'name',
+                      'opening_hours',
+                      'formatted_address',
+                      'formatted_phone_number',
+                      'rating',
+                      'website',
+                    ],
+                  };
+                  service.getDetails(request, (place, status) => {
+                    if (
+                      status === google.maps.places.PlacesServiceStatus.OK &&
+                      place
+                    ) {
+                      console.log('place info:', place);
+                    } else {
+                      console.error('Failed to get place info:', status);
+                    }
+                  });
+                } else {
+                  console.error('Failed to find place:', status);
+                }
+              }
+            );
+            map.setCenter(position);
+            map.setZoom(20);
           });
         });
       } catch (error) {
