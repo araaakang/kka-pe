@@ -1,6 +1,6 @@
 import Script from 'next/script';
-import Map from '@/app/components/map';
-import Info from '@/app/components/info';
+import Map from '@/app/components/Map';
+import InfoCard from '@/app/components/InfoCard';
 
 export default function Home() {
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY;
@@ -12,7 +12,7 @@ export default function Home() {
           <h1 className="text-4xl font-extrabold">KKA-PE</h1>
           <span className="text-4xl font-extrabold">?</span>
         </div>
-        <Info />
+        <InfoCard />
         <Map />
       </main>
       <Script

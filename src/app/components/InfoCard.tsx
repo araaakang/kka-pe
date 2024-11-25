@@ -1,6 +1,6 @@
 'use client';
 
-export default function Info() {
+export default function InfoCard() {
   return (
     <div className="fixed left-16 top-1/2 transform -translate-y-1/2 w-2/5 h-2/3 bg-gray-200 rounded text-black p-16">
       <h2 className="text-xl font-bold">店家名稱</h2>
