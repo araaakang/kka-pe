@@ -3,6 +3,8 @@ import Map from '@/app/components/map';
 import Info from '@/app/components/info';
 
 export default function Home() {
+  const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY;
+
   return (
     <div className="min-h-screen p-8 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 items-center sm:items-start">
@@ -13,7 +15,9 @@ export default function Home() {
         <Info />
         <Map />
       </main>
-      <Script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyACloyFqZHDGRy5RwasW3unXxQ5EbdaPa0&loading=async&libraries=places&callback=initMap&libraries=marker" />
+      <Script
+        src={`https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&libraries=places&callback=initMap&libraries=marker`}
+      />
     </div>
   );
 }
