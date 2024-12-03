@@ -2,8 +2,13 @@
 
 import React, { useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
+import { PlaceInfoType } from '@/app/types/map';
 
-export default function Map() {
+type MapProps = {
+  onPlaceSelect: React.Dispatch<React.SetStateAction<PlaceInfoType>>;
+};
+
+export default function Map({ onPlaceSelect }: MapProps) {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
 
   // Example JSON data with five coffee shops
@@ -109,6 +114,15 @@ export default function Map() {
                       status === google.maps.places.PlacesServiceStatus.OK &&
                       place
                     ) {
+                      const filteredPlaceInfo = {
+                        name: place.name,
+                        open_now: place.opening_hours?.open_now,
+                        formatted_address: place.formatted_address,
+                        formatted_phone_number: place.formatted_phone_number,
+                        rating: place.rating,
+                        website: place.website,
+                      };
+                      onPlaceSelect(filteredPlaceInfo);
                       console.log('place info:', place);
                     } else {
                       console.error('Failed to get place info:', status);
