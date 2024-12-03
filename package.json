@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
+    "@vercel/postgres": "^0.10.0",
+    "bcrypt": "^5.1.1",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "next": "15.0.3"
   },
   "devDependencies": {
     "typescript": "^5",
+    "@types/bcrypt": "^5.0.2",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^20",
     "@types/react": "^18",
