@@ -1,6 +1,34 @@
 import { db } from '@vercel/postgres';
+import { places } from '../lib/placeholder-data';
+
 const client = await db.connect();
 
+async function seedPlaces() {
+  await client.sql`
+    DELETE FROM places;
+  `;
+
+  await client.sql`
+    CREATE TABLE IF NOT EXISTS places (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    lat FLOAT NOT NULL,
+    lng FLOAT NOT NULL
+    );
+  `;
+
+  const insertedPlaces = await Promise.all(
+    places.map(
+      (place) => client.sql`
+          INSERT INTO places (name, lat, lng)
+          VALUES (${place.name}, ${place.lat}, ${place.lng})
+          ON CONFLICT (name) DO NOTHING;
+        `
+    )
+  );
+
+  return insertedPlaces;
+}
 export async function GET() {
   //   return Response.json({
   //     message:
@@ -8,6 +36,7 @@ export async function GET() {
   //   });
   try {
     await client.sql`BEGIN`;
+    await seedPlaces();
     await client.sql`COMMIT`;
 
     return Response.json({ message: 'Database seeded successfully' });
