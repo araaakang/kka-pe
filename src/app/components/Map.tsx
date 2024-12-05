@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { PlaceInfoType } from '@/app/types/map';
+import { Place } from '@/app/lib/definitions';
 
 type MapProps = {
   onPlaceSelect: React.Dispatch<React.SetStateAction<PlaceInfoType>>;
@@ -10,35 +11,6 @@ type MapProps = {
 
 export default function Map({ onPlaceSelect }: MapProps) {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
-
-  // Example JSON data with five coffee shops
-  const data = [
-    {
-      name: 'OH MY ZOO 寵物咖啡廳',
-      lat: 25.0425012,
-      lng: 121.5521667,
-    },
-    {
-      name: '倉鼠甜點工作室',
-      lat: 25.0392103,
-      lng: 121.5253616,
-    },
-    {
-      name: 'Tart club 蛋塔俱樂部(每月公休以ig發佈為主）',
-      lat: 25.0554109,
-      lng: 121.5188856,
-    },
-    {
-      name: '富富',
-      lat: 25.0462952,
-      lng: 121.5102851,
-    },
-    {
-      name: '灯火 AKARI 深夜咖啡（最後點餐為11點，無接待四人以上組別，營業時間請參考Ig公告）',
-      lat: 24.9978364,
-      lng: 121.5171202,
-    },
-  ];
 
   useEffect(() => {
     const initMap = async () => {
@@ -73,7 +45,9 @@ export default function Map({ onPlaceSelect }: MapProps) {
           map.setZoom(16);
         });
         // Create marker for each coffee shop
-        data.forEach((shop) => {
+        const response = await fetch('/api/places');
+        const placesData = await response.json();
+        placesData.forEach((shop: Place) => {
           const position = {
             lat: shop.lat,
             lng: shop.lng,
