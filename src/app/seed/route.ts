@@ -1,5 +1,5 @@
 import { db } from '@vercel/postgres';
-import { places } from '../lib/placeholder-data';
+import { places } from '../lib/initial-data';
 
 const client = await db.connect();
 
