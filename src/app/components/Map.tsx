@@ -10,6 +10,7 @@ type MapProps = {
 };
 
 export default function Map({ onPlaceSelect }: MapProps) {
+  const searchBarRef = React.useRef<HTMLInputElement | null>(null);
   const mapRef = React.useRef<HTMLDivElement | null>(null);
   const mapInstance = React.useRef<google.maps.Map | null>(null);
 
@@ -23,13 +24,14 @@ export default function Map({ onPlaceSelect }: MapProps) {
         });
         const { Map } = await loader.importLibrary('maps');
         const { AdvancedMarkerElement } = await loader.importLibrary('marker');
-        const position = {
-          lat: 24.998259,
-          lng: 121.517034,
+        const { Autocomplete } = await loader.importLibrary('places');
+        const taiwanGeoCenter = {
+          lat: 23.9738842,
+          lng: 120.9820168,
         };
         // map options
         const mapOptions: google.maps.MapOptions = {
-          center: position,
+          center: taiwanGeoCenter,
           zoom: 9,
           mapId: 'KKA_PE_MAP_ID',
         };
@@ -38,6 +40,21 @@ export default function Map({ onPlaceSelect }: MapProps) {
         const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
         mapInstance.current = map;
         setToCurrentPosition();
+
+        // setup the search bar
+        new Autocomplete(
+          searchBarRef.current as HTMLInputElement,
+          {
+            types: ['cafe', 'restaurant'],
+            bounds: {
+              east: 122.0071613, // Easternmost Point of Taiwan
+              west: 120.0360012, // Westernmost Point of Taiwan
+              south: 21.8976373, // Southernmost Point of Taiwan
+              north: 25.2996123, // Northernmost Point of Taiwan
+            },
+            strictBounds: true,
+          }
+        );
 
         // Fetch places and create markers
         const service = new google.maps.places.PlacesService(map);
@@ -136,6 +153,7 @@ export default function Map({ onPlaceSelect }: MapProps) {
 
   return (
     <>
+      <input className="text-black" ref={searchBarRef} />
       <button
         className="absolute top-24 right-0 bg-black p-2 z-10"
         onClick={setToCurrentPosition}
