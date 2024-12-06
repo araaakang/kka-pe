@@ -11,6 +11,7 @@ type MapProps = {
 
 export default function Map({ onPlaceSelect }: MapProps) {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
+  const mapInstance = React.useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
     const initMap = async () => {
@@ -32,19 +33,14 @@ export default function Map({ onPlaceSelect }: MapProps) {
           zoom: 9,
           mapId: 'KKA_PE_MAP_ID',
         };
+
         // setup the map
         const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
+        mapInstance.current = map;
+        setToCurrentPosition();
+
+        // Fetch places and create markers
         const service = new google.maps.places.PlacesService(map);
-        let currentPosition;
-        navigator.geolocation.getCurrentPosition(function (position) {
-          currentPosition = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          map.setCenter(currentPosition);
-          map.setZoom(16);
-        });
-        // Create marker for each coffee shop
         const response = await fetch('/api/places');
         const placesData = await response.json();
         placesData.forEach((shop: Place) => {
@@ -118,15 +114,43 @@ export default function Map({ onPlaceSelect }: MapProps) {
     initMap();
   }, []);
 
+  const setToCurrentPosition = () => {
+    if (!mapInstance.current) {
+      console.error('Map instance is not initialized.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const currentPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        mapInstance.current!.setCenter(currentPosition);
+        mapInstance.current!.setZoom(16);
+      },
+      (error) => {
+        console.error('Error getting current position:', error);
+      }
+    );
+  };
+
   return (
-    <div className="absolute top-0 right-0 w-1/2 h-screen bg-gray-200">
-      <div
-        style={{
-          height: '100vh',
-          width: '50vw',
-        }}
-        ref={mapRef}
-      />
-    </div>
+    <>
+      <button
+        className="absolute top-24 right-0 bg-black p-2 z-10"
+        onClick={setToCurrentPosition}
+      >
+        回到我的位置
+      </button>
+      <div className="absolute top-0 right-0 w-1/2 h-screen bg-gray-200">
+        <div
+          style={{
+            height: '100vh',
+            width: '50vw',
+          }}
+          ref={mapRef}
+        />
+      </div>
+    </>
   );
 }
