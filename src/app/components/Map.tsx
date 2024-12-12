@@ -42,7 +42,7 @@ export default function Map({ onPlaceSelect }: MapProps) {
         setToCurrentPosition();
 
         // setup the search bar
-        new Autocomplete(
+        const searchBar = new Autocomplete(
           searchBarRef.current as HTMLInputElement,
           {
             types: ['cafe', 'restaurant'],
@@ -55,6 +55,10 @@ export default function Map({ onPlaceSelect }: MapProps) {
             strictBounds: true,
           }
         );
+        searchBar.addListener('place_changed', function () {
+          const place = searchBar.getPlace();
+          console.log(place);
+        });
 
         // Fetch places and create markers
         const service = new google.maps.places.PlacesService(map);
